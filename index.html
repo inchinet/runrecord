@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>跑步器 - Running Tracker</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="background-gradient"></div>
+    
+    <div class="container">
+        <!-- Header -->
+        <header class="glass-card header">
+            <h1>🏃 跑步器</h1>
+            <div class="gps-status" id="gpsStatus">
+                <span class="status-icon">📡</span>
+                <span class="status-text">GPS 未啟用</span>
+                <div class="signal-strength">
+                    <div class="signal-bar"></div>
+                    <div class="signal-bar"></div>
+                    <div class="signal-bar"></div>
+                    <div class="signal-bar"></div>
+                </div>
+            </div>
+        </header>
+
+        <!-- GPS Permission Alert -->
+        <div class="glass-card alert-card" id="gpsAlert">
+            <div class="alert-icon">⚠️</div>
+            <div class="alert-content">
+                <h3>需要 GPS 權限</h3>
+                <p>請啟用您的裝置 GPS 以開始追蹤活動</p>
+                <button class="btn btn-primary" id="enableGpsBtn">啟用 GPS</button>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Map Container -->
+            <div class="glass-card map-container">
+                <div id="map"></div>
+                <div class="map-overlay" id="mapOverlay">
+                    <div class="overlay-icon">🗺️</div>
+                    <p>等待 GPS 定位...</p>
+                </div>
+            </div>
+
+            <!-- Activity Controls -->
+            <div class="glass-card controls-card">
+                <div class="activity-selector">
+                    <button class="activity-btn active" data-activity="running">
+                        <span class="activity-icon">🏃</span>
+                        <span>跑步</span>
+                    </button>
+                    <button class="activity-btn" data-activity="walking">
+                        <span class="activity-icon">🚶</span>
+                        <span>步行</span>
+                    </button>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <div class="stat-label">速度</div>
+                        <div class="stat-value" id="speedValue">0.0</div>
+                        <div class="stat-unit">km/h</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">距離</div>
+                        <div class="stat-value" id="distanceValue">0.00</div>
+                        <div class="stat-unit">km</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">時間</div>
+                        <div class="stat-value" id="timeValue">00:00:00</div>
+                        <div class="stat-unit"></div>
+                    </div>
+                </div>
+
+                <div class="control-buttons">
+                    <button class="btn btn-success btn-large" id="startBtn">
+                        <span class="btn-icon">▶️</span>
+                        <span>開始</span>
+                    </button>
+                    <button class="btn btn-warning btn-large hidden" id="pauseBtn">
+                        <span class="btn-icon">⏸️</span>
+                        <span>暫停</span>
+                    </button>
+                    <button class="btn btn-info btn-large hidden" id="resumeBtn">
+                        <span class="btn-icon">▶️</span>
+                        <span>繼續</span>
+                    </button>
+                    <button class="btn btn-danger btn-large hidden" id="stopBtn">
+                        <span class="btn-icon">⏹️</span>
+                        <span>停止</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- History Section -->
+            <div class="glass-card history-card">
+                <div class="history-header">
+                    <h2>活動紀錄</h2>
+                    <div class="history-actions">
+                        <select id="historyFilter" class="filter-select">
+                            <option value="all">全部</option>
+                            <option value="week">最近一週</option>
+                            <option value="month">最近一月</option>
+                            <option value="year">最近一年</option>
+                        </select>
+                        <button class="btn btn-secondary" id="exportBtn">
+                            <span>📊 匯出 Excel</span>
+                        </button>
+                    </div>
+                </div>
+                <div class="history-list" id="historyList">
+                    <div class="empty-state">
+                        <div class="empty-icon">📝</div>
+                        <p>尚無活動紀錄</p>
+                        <p class="empty-hint">開始您的第一次跑步吧！</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Google Maps API -->
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDq3lKIsSvvpxD8ll7i3h9htPjNT656lK0&callback=initMap" async defer></script>
+    <script src="app.js"></script>
+</body>
+</html>
