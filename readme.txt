@@ -28,7 +28,11 @@ https://inchinet.github.io/runrecord/
 - 🔵 藍線 = 路線 Blue line = Route path
 - 🔴 紅點 = 終點 Red dot = End point (after stopping)
 
-both GitHub, google ask me remove public access the api key in Z:\antigravity\runrecord\ upload to my https://inchinet.github.io/runrecord/
+I want to push runrecord to https://github.com/inchinet/runrecord not ok
 
-i have my own server, can i create a runrecord inside for this in below ?
-https://inter-net.no-ip.com/
+I think need remove all in readme.md:
+
+
+直接訪問 Visit: https://inchinet.github.io/runrecord/
+
+I have own server to runrecord, anyone use git version, they need apply their own API key.
