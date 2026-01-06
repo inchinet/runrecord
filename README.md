@@ -3,7 +3,6 @@
 一個具有 Liquid Glass 介面的跑步紀錄器網頁應用程式  
 A web-based running tracker with stunning Liquid Glass UI design
 
-[![Live Demo](https://img.shields.io/badge/demo-live-success)](https://inchinet.github.io/runrecord/)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
 ## ✨ 功能特色 Features
