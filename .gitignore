@@ -1,0 +1,18 @@
+# DO NOT COMMIT THIS FILE TO GITHUB
+# This file should remain only on your local machine and server
+
+# Production files with sensitive data
+index.production.html
+
+# Environment files (if you create any in the future)
+.env
+.env.local
+.env.production
+
+# Server configuration files
+.htaccess.local
+config.local.js
+
+# Backup files
+*.backup
+*.bak
