@@ -3,8 +3,12 @@
 一個具有 Liquid Glass 介面的跑步紀錄器網頁應用程式  
 A web-based running tracker with stunning Liquid Glass UI design
 
-[![Live Demo](https://img.shields.io/badge/demo-live-success)](https://inchinet.github.io/runrecord/)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+
+> [!IMPORTANT]
+> **🔑 Google Maps API Key Required**  
+> This application requires your own Google Maps API key to function. The published version at [https://inchinet.github.io/runrecord/](https://inchinet.github.io/runrecord/) will NOT work without adding your API key first.  
+> See [Prerequisites](#-使用前準備-prerequisites) section below for setup instructions.
 
 ## ✨ 功能特色 Features
 
@@ -19,9 +23,6 @@ A web-based running tracker with stunning Liquid Glass UI design
 ✅ **Liquid Glass UI** - 現代化玻璃擬態設計 / Modern glassmorphism design  
 
 ## 🚀 使用方式 How to Use
-
-> [!IMPORTANT]
-> To use this application, you need to add your own Google Maps API key in `index.html` (see instructions below).
 
 This is a client-side application that can be hosted anywhere with HTTPS support.
 
