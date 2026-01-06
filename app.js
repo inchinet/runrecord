@@ -25,17 +25,17 @@ const elements = {
     gpsAlert: document.getElementById('gpsAlert'),
     enableGpsBtn: document.getElementById('enableGpsBtn'),
     mapOverlay: document.getElementById('mapOverlay'),
-    
+
     activityBtns: document.querySelectorAll('.activity-btn'),
     startBtn: document.getElementById('startBtn'),
     pauseBtn: document.getElementById('pauseBtn'),
     resumeBtn: document.getElementById('resumeBtn'),
     stopBtn: document.getElementById('stopBtn'),
-    
+
     speedValue: document.getElementById('speedValue'),
     distanceValue: document.getElementById('distanceValue'),
     timeValue: document.getElementById('timeValue'),
-    
+
     historyFilter: document.getElementById('historyFilter'),
     exportBtn: document.getElementById('exportBtn'),
     historyList: document.getElementById('historyList')
@@ -45,7 +45,7 @@ const elements = {
 function initMap() {
     // Default center (will be updated when GPS is available)
     const defaultCenter = { lat: 25.0330, lng: 121.5654 }; // Taipei
-    
+
     map = new google.maps.Map(document.getElementById('map'), {
         center: defaultCenter,
         zoom: 15,
@@ -63,7 +63,7 @@ function initMap() {
         streetViewControl: false,
         fullscreenControl: true
     });
-    
+
     console.log('Map initialized');
 }
 
@@ -73,10 +73,10 @@ function requestGPSPermission() {
         alert('您的瀏覽器不支援 GPS 定位功能');
         return;
     }
-    
+
     elements.gpsAlert.classList.add('hidden');
     elements.mapOverlay.classList.remove('hidden');
-    
+
     // Request high accuracy position
     navigator.geolocation.getCurrentPosition(
         (position) => {
@@ -94,27 +94,27 @@ function requestGPSPermission() {
 
 function handlePositionSuccess(position) {
     currentPosition = position;
-    
+
     // Update GPS status
     updateGPSStatus(position.coords.accuracy);
-    
+
     // Center map on current position
     const pos = {
         lat: position.coords.latitude,
         lng: position.coords.longitude
     };
-    
+
     map.setCenter(pos);
     elements.mapOverlay.classList.add('hidden');
-    
+
     console.log('GPS position acquired:', pos);
 }
 
 function handlePositionError(error) {
     console.error('GPS Error:', error);
-    
+
     let message = '';
-    switch(error.code) {
+    switch (error.code) {
         case error.PERMISSION_DENIED:
             message = 'GPS 權限被拒絕，請在瀏覽器設定中允許位置存取';
             break;
@@ -127,7 +127,7 @@ function handlePositionError(error) {
         default:
             message = 'GPS 發生未知錯誤';
     }
-    
+
     alert(message);
     elements.gpsAlert.classList.remove('hidden');
 }
@@ -136,12 +136,12 @@ function startGPSWatch() {
     if (watchId !== null) {
         navigator.geolocation.clearWatch(watchId);
     }
-    
+
     watchId = navigator.geolocation.watchPosition(
         (position) => {
             currentPosition = position;
             updateGPSStatus(position.coords.accuracy);
-            
+
             // If activity is running, record the position
             if (activityState === 'running') {
                 recordPosition(position);
@@ -161,17 +161,17 @@ function startGPSWatch() {
 function updateGPSStatus(accuracy) {
     const statusText = elements.gpsStatus.querySelector('.status-text');
     const signalBars = elements.gpsStatus.querySelectorAll('.signal-bar');
-    
+
     elements.gpsStatus.classList.add('active');
     statusText.textContent = 'GPS 已啟用';
-    
+
     // Update signal strength based on accuracy
     // Good: < 10m, Fair: 10-30m, Poor: > 30m
     let strength = 4;
     if (accuracy > 30) strength = 1;
     else if (accuracy > 20) strength = 2;
     else if (accuracy > 10) strength = 3;
-    
+
     signalBars.forEach((bar, index) => {
         if (index < strength) {
             bar.style.background = 'var(--success)';
@@ -188,9 +188,9 @@ function recordPosition(position) {
         lng: position.coords.longitude,
         timestamp: position.timestamp
     };
-    
+
     routeCoordinates.push(coords);
-    
+
     // Calculate distance if we have a previous position
     if (lastPosition) {
         const distance = calculateDistance(
@@ -199,13 +199,18 @@ function recordPosition(position) {
             position.coords.latitude,
             position.coords.longitude
         );
-        
+
         totalDistance += distance;
         updateStats();
     }
-    
+
     lastPosition = position;
-    
+
+    // Auto-center map on current position during active run
+    if (activityState === 'running' && map) {
+        map.panTo({ lat: coords.lat, lng: coords.lng });
+    }
+
     // Update route on map
     updateRouteOnMap();
 }
@@ -215,14 +220,14 @@ function calculateDistance(lat1, lon1, lat2, lon2) {
     const R = 6371; // Earth's radius in km
     const dLat = toRad(lat2 - lat1);
     const dLon = toRad(lon2 - lon1);
-    
-    const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
-              Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
-              Math.sin(dLon/2) * Math.sin(dLon/2);
-    
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+
+    const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+        Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
+        Math.sin(dLon / 2) * Math.sin(dLon / 2);
+
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
     const distance = R * c;
-    
+
     return distance;
 }
 
@@ -232,15 +237,15 @@ function toRad(degrees) {
 
 function updateRouteOnMap() {
     if (!map || routeCoordinates.length === 0) return;
-    
+
     // Remove old polyline
     if (routePolyline) {
         routePolyline.setMap(null);
     }
-    
+
     // Create new polyline
     const path = routeCoordinates.map(coord => ({ lat: coord.lat, lng: coord.lng }));
-    
+
     routePolyline = new google.maps.Polyline({
         path: path,
         geodesic: true,
@@ -248,9 +253,9 @@ function updateRouteOnMap() {
         strokeOpacity: 0.8,
         strokeWeight: 4
     });
-    
+
     routePolyline.setMap(map);
-    
+
     // Add start marker
     if (!startMarker && routeCoordinates.length > 0) {
         startMarker = new google.maps.Marker({
@@ -275,10 +280,10 @@ function updateStats() {
         const now = Date.now();
         activityElapsedTime = Math.floor((now - activityStartTime - activityPausedTime) / 1000);
     }
-    
+
     // Calculate speed (km/h)
     const speed = activityElapsedTime > 0 ? (totalDistance / activityElapsedTime) * 3600 : 0;
-    
+
     // Update UI
     elements.speedValue.textContent = speed.toFixed(1);
     elements.distanceValue.textContent = totalDistance.toFixed(2);
@@ -289,7 +294,7 @@ function formatTime(seconds) {
     const hours = Math.floor(seconds / 3600);
     const minutes = Math.floor((seconds % 3600) / 60);
     const secs = seconds % 60;
-    
+
     return `${pad(hours)}:${pad(minutes)}:${pad(secs)}`;
 }
 
@@ -301,7 +306,7 @@ function startTimer() {
     if (timerInterval) {
         clearInterval(timerInterval);
     }
-    
+
     timerInterval = setInterval(() => {
         updateStats();
     }, 1000);
@@ -320,7 +325,7 @@ function startActivity() {
         alert('請等待 GPS 定位完成');
         return;
     }
-    
+
     activityState = 'running';
     activityStartTime = Date.now();
     routeCoordinates = [];
@@ -328,7 +333,7 @@ function startActivity() {
     lastPosition = null;
     activityPausedTime = 0;
     activityElapsedTime = 0;
-    
+
     // Clear previous route
     if (routePolyline) {
         routePolyline.setMap(null);
@@ -342,67 +347,67 @@ function startActivity() {
         endMarker.setMap(null);
         endMarker = null;
     }
-    
+
     // Update UI
     elements.startBtn.classList.add('hidden');
     elements.pauseBtn.classList.remove('hidden');
     elements.stopBtn.classList.remove('hidden');
-    
+
     // Disable activity type selection
     elements.activityBtns.forEach(btn => btn.disabled = true);
-    
+
     // Start timer
     startTimer();
-    
+
     console.log('Activity started:', activityType);
 }
 
 function pauseActivity() {
     if (activityState !== 'running') return;
-    
+
     activityState = 'paused';
     const pauseTime = Date.now();
-    
+
     // Update UI
     elements.pauseBtn.classList.add('hidden');
     elements.resumeBtn.classList.remove('hidden');
-    
+
     // Stop timer
     stopTimer();
-    
+
     // Store pause start time
     window.pauseStartTime = pauseTime;
-    
+
     console.log('Activity paused');
 }
 
 function resumeActivity() {
     if (activityState !== 'paused') return;
-    
+
     activityState = 'running';
-    
+
     // Calculate paused duration
     const pauseDuration = Date.now() - window.pauseStartTime;
     activityPausedTime += pauseDuration;
-    
+
     // Update UI
     elements.resumeBtn.classList.add('hidden');
     elements.pauseBtn.classList.remove('hidden');
-    
+
     // Restart timer
     startTimer();
-    
+
     console.log('Activity resumed');
 }
 
 function stopActivity() {
     if (activityState === 'idle') return;
-    
+
     activityState = 'stopped';
-    
+
     // Stop timer
     stopTimer();
-    
+
     // Add end marker
     if (routeCoordinates.length > 0) {
         const lastCoord = routeCoordinates[routeCoordinates.length - 1];
@@ -420,22 +425,22 @@ function stopActivity() {
             }
         });
     }
-    
+
     // Save activity
     saveActivity();
-    
+
     // Reset UI
     elements.pauseBtn.classList.add('hidden');
     elements.resumeBtn.classList.add('hidden');
     elements.stopBtn.classList.add('hidden');
     elements.startBtn.classList.remove('hidden');
-    
+
     // Enable activity type selection
     elements.activityBtns.forEach(btn => btn.disabled = false);
-    
+
     // Reset state
     activityState = 'idle';
-    
+
     console.log('Activity stopped');
 }
 
@@ -450,17 +455,17 @@ function saveActivity() {
         averageSpeed: activityElapsedTime > 0 ? (totalDistance / activityElapsedTime) * 3600 : 0,
         route: routeCoordinates
     };
-    
+
     // Get existing activities
     const activities = getActivities();
     activities.push(activity);
-    
+
     // Save to localStorage
     localStorage.setItem('runningActivities', JSON.stringify(activities));
-    
+
     // Refresh history
     displayHistory();
-    
+
     console.log('Activity saved:', activity);
 }
 
@@ -471,7 +476,7 @@ function getActivities() {
 
 function displayHistory(filter = 'all') {
     const activities = getActivities();
-    
+
     if (activities.length === 0) {
         elements.historyList.innerHTML = `
             <div class="empty-state">
@@ -482,30 +487,30 @@ function displayHistory(filter = 'all') {
         `;
         return;
     }
-    
+
     // Filter activities
     const now = Date.now();
     const filtered = activities.filter(activity => {
         const activityDate = new Date(activity.date).getTime();
         const daysDiff = (now - activityDate) / (1000 * 60 * 60 * 24);
-        
-        switch(filter) {
+
+        switch (filter) {
             case 'week': return daysDiff <= 7;
             case 'month': return daysDiff <= 30;
             case 'year': return daysDiff <= 365;
             default: return true;
         }
     });
-    
+
     // Sort by date (newest first)
     filtered.sort((a, b) => new Date(b.date) - new Date(a.date));
-    
+
     // Generate HTML
     const html = filtered.map(activity => {
         const date = new Date(activity.date);
         const icon = activity.type === 'running' ? '🏃' : '🚶';
         const typeText = activity.type === 'running' ? '跑步' : '步行';
-        
+
         return `
             <div class="history-item">
                 <div class="history-item-left">
@@ -532,7 +537,7 @@ function displayHistory(filter = 'all') {
             </div>
         `;
     }).join('');
-    
+
     elements.historyList.innerHTML = html;
 }
 
@@ -542,22 +547,22 @@ function formatDate(date) {
     const day = pad(date.getDate());
     const hours = pad(date.getHours());
     const minutes = pad(date.getMinutes());
-    
+
     return `${year}-${month}-${day} ${hours}:${minutes}`;
 }
 
 // ==================== Export to Excel ====================
 function exportToExcel() {
     const activities = getActivities();
-    
+
     if (activities.length === 0) {
         alert('沒有可匯出的紀錄');
         return;
     }
-    
+
     // Create CSV content
     let csv = '日期,類型,距離(km),平均速度(km/h),時間,時長(秒)\n';
-    
+
     activities.forEach(activity => {
         const date = formatDate(new Date(activity.date));
         const type = activity.type === 'running' ? '跑步' : '步行';
@@ -565,23 +570,23 @@ function exportToExcel() {
         const speed = activity.averageSpeed.toFixed(1);
         const time = formatTime(activity.duration);
         const duration = activity.duration;
-        
+
         csv += `${date},${type},${distance},${speed},${time},${duration}\n`;
     });
-    
+
     // Create download link
     const blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8;' });
     const link = document.createElement('a');
     const url = URL.createObjectURL(blob);
-    
+
     link.setAttribute('href', url);
     link.setAttribute('download', `running_records_${Date.now()}.csv`);
     link.style.visibility = 'hidden';
-    
+
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
-    
+
     console.log('Export completed');
 }
 
@@ -591,7 +596,7 @@ elements.enableGpsBtn.addEventListener('click', requestGPSPermission);
 elements.activityBtns.forEach(btn => {
     btn.addEventListener('click', () => {
         if (activityState !== 'idle') return;
-        
+
         elements.activityBtns.forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
         activityType = btn.dataset.activity;
@@ -616,10 +621,10 @@ window.addEventListener('load', () => {
         alert('您的瀏覽器不支援 GPS 定位功能');
         return;
     }
-    
+
     // Display history
     displayHistory();
-    
+
     console.log('Application initialized');
 });
 
