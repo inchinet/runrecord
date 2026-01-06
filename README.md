@@ -5,10 +5,7 @@ A web-based running tracker with stunning Liquid Glass UI design
 
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
-> [!IMPORTANT]
-> **🔑 Google Maps API Key Required**  
-> This application requires your own Google Maps API key to function. The published version at [https://inchinet.github.io/runrecord/](https://inchinet.github.io/runrecord/) will NOT work without adding your API key first.  
-> See [Prerequisites](#-使用前準備-prerequisites) section below for setup instructions.
+
 
 ## ✨ 功能特色 Features
 
@@ -28,23 +25,16 @@ This is a client-side application that can be hosted anywhere with HTTPS support
 
 ## 📋 使用前準備 Prerequisites
 
-### 1. Google Maps API 金鑰 Google Maps API Key
+### Google Maps API Key (for repository users)
 
-1. 前往 Go to [Google Cloud Console](https://console.cloud.google.com/)
-2. 建立新專案或選擇現有專案 Create a new project or select existing one
-3. 啟用 Enable **Maps JavaScript API**
-4. 建立 API 金鑰 Create an API key
-5. 在 `index.html` 中替換 Replace in `index.html`:
-
+If you clone this repository, you need to add your own Google Maps API key in `index.html` line 131:
 ```html
-<!-- Line 122 -->
 <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY_HERE&callback=initMap" async defer></script>
 ```
 
-將 `YOUR_API_KEY_HERE` 替換為您的 API 金鑰  
-Replace `YOUR_API_KEY_HERE` with your actual API key
+Get your API key from [Google Cloud Console](https://console.cloud.google.com/) and enable **Maps JavaScript API**.
 
-### 2. 執行環境需求 Requirements
+### Requirements
 
 - **HTTPS 或 localhost** / HTTPS or localhost - 瀏覽器的 Geolocation API 需要安全環境 / Browser Geolocation API requires secure context
 - **支援 GPS 的裝置** / GPS-enabled device - 建議使用具有 GPS 功能的行動裝置 / Recommended to use mobile devices with GPS
@@ -175,9 +165,8 @@ Indoor or high-rise areas may affect GPS accuracy
 - ✅ 使用 HTTPS 或 localhost Use HTTPS or localhost (not `http://192.168.x.x`)
 
 ### 地圖無法顯示 Map Not Showing
-- ✅ 檢查 Google Maps API 金鑰是否正確 Check if API key is correct
-- ✅ 確認 API 金鑰已啟用 Maps JavaScript API Confirm Maps JavaScript API is enabled
 - ✅ 檢查網路連線是否正常 Check internet connection
+- ✅ 確認地圖服務正常運作 Confirm map service is working properly
 
 ### 資料無法儲存 Data Not Saving
 - ✅ 確認瀏覽器允許 localStorage Ensure browser allows localStorage
@@ -189,7 +178,7 @@ Indoor or high-rise areas may affect GPS accuracy
 此應用程式可以託管在任何支援 HTTPS 的網頁伺服器上  
 This application can be hosted on any web server with HTTPS support
 
-- GitHub Pages (requires your own API key)
+- GitHub Pages
 - Your own web server
 - Any static hosting service (Netlify, Vercel, etc.)
 
