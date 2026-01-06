@@ -18,10 +18,6 @@ A web-based running tracker with stunning Liquid Glass UI design
 ✅ **Excel 匯出 Excel Export** - 將紀錄匯出為 CSV 格式 / Export records to CSV format  
 ✅ **Liquid Glass UI** - 現代化玻璃擬態設計 / Modern glassmorphism design  
 
-## 🚀 線上使用 Live Demo
-
-直接訪問 Visit: **https://inchinet.github.io/runrecord/**
-
 ## 📋 使用前準備 Prerequisites
 
 ### 1. Google Maps API 金鑰 Google Maps API Key
