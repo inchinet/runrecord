@@ -176,8 +176,6 @@ Indoor or high-rise areas may affect GPS accuracy
 - ✅ 清除瀏覽器快取後重試 Clear browser cache and retry
 
 ## 🆓 GitHub Pages 託管 GitHub Pages Hosting
-
-此專案使用 GitHub Pages 免費託管  
 N/A as using google API
 
 ## 📄 授權 License
@@ -198,5 +196,6 @@ Created by [inchinet](https://github.com/inchinet)
 ---
 
 **享受您的跑步！ Enjoy your running! 🏃‍♂️💨**
+
 
 
