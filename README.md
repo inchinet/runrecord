@@ -178,12 +178,7 @@ Indoor or high-rise areas may affect GPS accuracy
 ## 🆓 GitHub Pages 託管 GitHub Pages Hosting
 
 此專案使用 GitHub Pages 免費託管  
-This project is hosted for free on GitHub Pages
-
-- ✅ **完全免費** Completely free forever (for public repositories)
-- ✅ **自動 HTTPS** Automatic HTTPS
-- ✅ **無限頻寬** Unlimited bandwidth (with fair use limits)
-- ✅ **自動部署** Automatic deployment on code updates
+N/A as using google API
 
 ## 📄 授權 License
 
@@ -198,9 +193,10 @@ Created by [inchinet](https://github.com/inchinet)
 
 - Google Maps API for mapping functionality
 - Inter font family for typography
-- GitHub Pages for free hosting
+
 
 ---
 
 **享受您的跑步！ Enjoy your running! 🏃‍♂️💨**
+
 
