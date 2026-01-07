@@ -5,6 +5,8 @@ A web-based running tracker with stunning Liquid Glass UI design
 
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
+![UI](https://github.com/inchinet/runrecord/blob/main/runrecord.png)
+
 ## ✨ 功能特色 Features
 
 ✅ **GPS 追蹤 GPS Tracking** - 高精度 GPS 定位與訊號強度顯示 / High-accuracy GPS positioning with signal strength indicator  
@@ -196,6 +198,7 @@ Created by [inchinet](https://github.com/inchinet)
 ---
 
 **享受您的跑步！ Enjoy your running! 🏃‍♂️💨**
+
 
 
 
