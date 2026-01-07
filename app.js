@@ -560,10 +560,35 @@ function exportToExcel() {
         return;
     }
 
+    // Get current filter value
+    const filter = elements.historyFilter.value;
+
+    // Filter activities based on the current filter selection
+    const now = Date.now();
+    const filtered = activities.filter(activity => {
+        const activityDate = new Date(activity.date).getTime();
+        const daysDiff = (now - activityDate) / (1000 * 60 * 60 * 24);
+
+        switch (filter) {
+            case 'week': return daysDiff <= 7;
+            case 'month': return daysDiff <= 30;
+            case 'year': return daysDiff <= 365;
+            default: return true;
+        }
+    });
+
+    if (filtered.length === 0) {
+        alert('目前篩選條件下沒有可匯出的紀錄');
+        return;
+    }
+
+    // Sort by date (newest first) to match history display
+    filtered.sort((a, b) => new Date(b.date) - new Date(a.date));
+
     // Create CSV content
     let csv = '日期,類型,距離(km),平均速度(km/h),時間,時長(秒)\n';
 
-    activities.forEach(activity => {
+    filtered.forEach(activity => {
         const date = formatDate(new Date(activity.date));
         const type = activity.type === 'running' ? '跑步' : '步行';
         const distance = activity.distance.toFixed(2);
