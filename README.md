@@ -28,7 +28,7 @@ A web-based running tracker with stunning Liquid Glass UI design
 5. 在 `index.html` 中替換 Replace in `index.html`:
 
 ```html
-<!-- Line 122 -->
+<!-- Line 133 -->
 <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY_HERE&callback=initMap" async defer></script>
 ```
 
@@ -203,3 +203,4 @@ Created by [inchinet](https://github.com/inchinet)
 ---
 
 **享受您的跑步！ Enjoy your running! 🏃‍♂️💨**
+
