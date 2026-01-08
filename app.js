@@ -505,8 +505,11 @@ function displayHistory(filter = 'all') {
     // Sort by date (newest first)
     filtered.sort((a, b) => new Date(b.date) - new Date(a.date));
 
+    // Limit to recent 10 records for display
+    const displayItems = filtered.slice(0, 10);
+
     // Generate HTML
-    const html = filtered.map(activity => {
+    const html = displayItems.map(activity => {
         const date = new Date(activity.date);
         const icon = activity.type === 'running' ? '🏃' : '🚶';
         const typeText = activity.type === 'running' ? '跑步' : '步行';
