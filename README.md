@@ -5,8 +5,6 @@ A web-based running tracker with stunning Liquid Glass UI design
 
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
-![UI](https://github.com/inchinet/runrecord/blob/main/runrecord.png)
-
 ## ✨ 功能特色 Features
 
 ✅ **GPS 追蹤 GPS Tracking** - 高精度 GPS 定位與訊號強度顯示 / High-accuracy GPS positioning with signal strength indicator  
@@ -14,6 +12,7 @@ A web-based running tracker with stunning Liquid Glass UI design
 ✅ **活動類型 Activity Types** - 支援跑步與步行模式 / Support for running and walking modes  
 ✅ **完整控制 Full Controls** - 開始、暫停、繼續、停止功能 / Start, Pause, Resume, Stop functionality  
 ✅ **即時統計 Real-time Stats** - 速度、距離、時間即時顯示 / Live speed, distance, and time display  
+✅ **自動暫停/繼續 Auto-Pause/Resume** - 針對地鐵等訊號盲區自動處理 GPS 遺失 / Intelligent handling of GPS signal loss in subways and tunnels  
 ✅ **資料儲存 Data Storage** - 本地儲存所有活動紀錄 / Local storage for all activity records  
 ✅ **歷史查詢 History View** - 可篩選一週、一月、一年的紀錄 / Filter records by week, month, or year  
 ✅ **Excel 匯出 Excel Export** - 將紀錄匯出為 CSV 格式 / Export records to CSV format  
@@ -123,6 +122,7 @@ runrecord/
 - 高精度模式 High accuracy mode (`enableHighAccuracy`)
 - 即時位置更新 Real-time position updates
 - 訊號強度視覺化指示器 Visual signal strength indicator
+- 自動防抖與訊號遺失處理 Auto-pause when signal is broken (e.g., subway) and auto-resume when signal returns
 - 自動地圖居中 Automatic map centering during activity
 
 ### 資料儲存 Data Storage
@@ -178,7 +178,7 @@ Indoor or high-rise areas may affect GPS accuracy
 - ✅ 清除瀏覽器快取後重試 Clear browser cache and retry
 
 ## 🆓 GitHub Pages 託管 GitHub Pages Hosting
-N/A as using google API
+   N/A as using google API
 
 ## 📄 授權 License
 
@@ -194,11 +194,6 @@ Created by [inchinet](https://github.com/inchinet)
 - Google Maps API for mapping functionality
 - Inter font family for typography
 
-
 ---
 
 **享受您的跑步！ Enjoy your running! 🏃‍♂️💨**
-
-
-
-

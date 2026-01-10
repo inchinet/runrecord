@@ -4,37 +4,37 @@
     --glass-bg: rgba(255, 255, 255, 0.1);
     --glass-border: rgba(255, 255, 255, 0.2);
     --glass-shadow: rgba(0, 0, 0, 0.1);
-    
+
     /* Gradient Colors */
     --gradient-1: #667eea;
     --gradient-2: #764ba2;
     --gradient-3: #f093fb;
     --gradient-4: #4facfe;
-    
+
     /* Status Colors */
     --success: #10b981;
     --warning: #f59e0b;
     --danger: #ef4444;
     --info: #3b82f6;
-    
+
     /* Text Colors */
     --text-primary: #ffffff;
     --text-secondary: rgba(255, 255, 255, 0.8);
     --text-muted: rgba(255, 255, 255, 0.6);
-    
+
     /* Spacing */
     --spacing-xs: 0.5rem;
     --spacing-sm: 1rem;
     --spacing-md: 1.5rem;
     --spacing-lg: 2rem;
     --spacing-xl: 3rem;
-    
+
     /* Border Radius */
     --radius-sm: 0.5rem;
     --radius-md: 1rem;
     --radius-lg: 1.5rem;
     --radius-xl: 2rem;
-    
+
     /* Transitions */
     --transition-fast: 0.2s ease;
     --transition-normal: 0.3s ease;
@@ -69,9 +69,12 @@ body {
 }
 
 @keyframes gradientShift {
-    0%, 100% {
+
+    0%,
+    100% {
         background: linear-gradient(135deg, var(--gradient-1) 0%, var(--gradient-2) 50%, var(--gradient-3) 100%);
     }
+
     50% {
         background: linear-gradient(135deg, var(--gradient-4) 0%, var(--gradient-1) 50%, var(--gradient-2) 100%);
     }
@@ -151,10 +154,21 @@ body {
     transition: all var(--transition-fast);
 }
 
-.signal-bar:nth-child(1) { height: 25%; }
-.signal-bar:nth-child(2) { height: 50%; }
-.signal-bar:nth-child(3) { height: 75%; }
-.signal-bar:nth-child(4) { height: 100%; }
+.signal-bar:nth-child(1) {
+    height: 25%;
+}
+
+.signal-bar:nth-child(2) {
+    height: 50%;
+}
+
+.signal-bar:nth-child(3) {
+    height: 75%;
+}
+
+.signal-bar:nth-child(4) {
+    height: 100%;
+}
 
 .gps-status.active .signal-bar {
     background: var(--success);
@@ -162,14 +176,46 @@ body {
 }
 
 @keyframes signalPulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.5; }
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.5;
+    }
 }
 
-.signal-bar:nth-child(1) { animation-delay: 0s; }
-.signal-bar:nth-child(2) { animation-delay: 0.1s; }
-.signal-bar:nth-child(3) { animation-delay: 0.2s; }
-.signal-bar:nth-child(4) { animation-delay: 0.3s; }
+.gps-status.active .signal-bar {
+    background: var(--success);
+    animation: signalPulse 1.5s ease-in-out infinite;
+}
+
+.gps-status.warning {
+    background: rgba(245, 158, 11, 0.2);
+    border: 1px solid rgba(245, 158, 11, 0.4);
+}
+
+.gps-status.warning .signal-bar {
+    background: var(--warning);
+}
+
+.signal-bar:nth-child(1) {
+    animation-delay: 0s;
+}
+
+.signal-bar:nth-child(2) {
+    animation-delay: 0.1s;
+}
+
+.signal-bar:nth-child(3) {
+    animation-delay: 0.2s;
+}
+
+.signal-bar:nth-child(4) {
+    animation-delay: 0.3s;
+}
 
 /* ==================== Alert Card ==================== */
 .alert-card {
@@ -242,8 +288,17 @@ body {
 }
 
 @keyframes pulse {
-    0%, 100% { transform: scale(1); opacity: 1; }
-    50% { transform: scale(1.1); opacity: 0.8; }
+
+    0%,
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+
+    50% {
+        transform: scale(1.1);
+        opacity: 0.8;
+    }
 }
 
 /* ==================== Controls Card ==================== */
@@ -307,15 +362,16 @@ body {
 }
 
 .stat-label {
-    font-size: 0.85rem;
-    color: var(--text-muted);
+    font-size: 1.1rem;
+    color: var(--text-secondary);
     margin-bottom: var(--spacing-xs);
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
+    text-transform: none;
+    /* Removed uppercase for better Chinese display */
+    font-weight: 500;
 }
 
 .stat-value {
-    font-size: 2rem;
+    font-size: 2.2rem;
     font-weight: 700;
     color: var(--text-primary);
     margin-bottom: 2px;
@@ -543,34 +599,35 @@ body {
         gap: var(--spacing-sm);
         text-align: center;
     }
-    
+
     .stats-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns: repeat(3, 1fr);
+        gap: var(--spacing-sm);
     }
-    
+
     .control-buttons {
         flex-direction: column;
     }
-    
+
     .history-header {
         flex-direction: column;
         align-items: stretch;
     }
-    
+
     .history-actions {
         flex-direction: column;
     }
-    
+
     .history-item {
         flex-direction: column;
         gap: var(--spacing-sm);
         text-align: center;
     }
-    
+
     .history-item-left {
         flex-direction: column;
     }
-    
+
     .history-item-stats {
         justify-content: center;
     }
@@ -580,16 +637,21 @@ body {
     .container {
         padding: var(--spacing-sm);
     }
-    
+
     .header h1 {
         font-size: 1.5rem;
     }
-    
+
     .map-container {
         height: 300px;
     }
-    
+
     .stat-value {
-        font-size: 1.5rem;
+        font-size: 1.8rem;
+        /* Slightly smaller on mobile but still prominent */
+    }
+
+    .stat-label {
+        font-size: 1rem;
     }
 }
