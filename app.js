@@ -2,7 +2,7 @@
 let map = null;
 let currentPosition = null;
 let watchId = null;
-let activityState = 'idle'; // idle, running, paused, stopped
+let activityState = 'idle'; // idle, running (tracking), paused, stopped
 let activityType = 'running'; // running, walking
 let routeCoordinates = [];
 let routePolyline = null;
@@ -18,6 +18,11 @@ let lastPosition = null;
 
 // Timer interval
 let timerInterval = null;
+
+// Auto-pause state
+let isAutoPaused = false;
+const ACCURACY_PAUSE_THRESHOLD = 100; // meters (less strict for subway/weak signal)
+const ACCURACY_RESUME_THRESHOLD = 30; // meters (strong signal)
 
 // ==================== DOM Elements ====================
 const elements = {
@@ -149,6 +154,12 @@ function startGPSWatch() {
         },
         (error) => {
             console.error('GPS watch error:', error);
+            // Auto-pause if we lose GPS signal while running
+            if (activityState === 'running') {
+                console.log('GPS signal lost, auto-pausing...');
+                isAutoPaused = true;
+                pauseActivity();
+            }
         },
         {
             enableHighAccuracy: true,
@@ -179,6 +190,31 @@ function updateGPSStatus(accuracy) {
             bar.style.background = 'rgba(255, 255, 255, 0.3)';
         }
     });
+
+    // Auto-pause logic
+    if (activityState === 'running' && accuracy > ACCURACY_PAUSE_THRESHOLD) {
+        console.log(`GPS accuracy (${accuracy.toFixed(1)}m) below threshold, auto-pausing...`);
+        isAutoPaused = true;
+        pauseActivity();
+        statusText.textContent = 'GPS 訊號弱 - 已自動暫停';
+        elements.gpsStatus.classList.remove('active');
+        elements.gpsStatus.classList.add('warning');
+    }
+    // Auto-resume logic
+    else if (activityState === 'paused' && isAutoPaused && accuracy <= ACCURACY_RESUME_THRESHOLD) {
+        console.log(`GPS accuracy (${accuracy.toFixed(1)}m) restored, auto-resuming...`);
+        isAutoPaused = false;
+        resumeActivity();
+        statusText.textContent = 'GPS 已恢復 - 已自動繼續';
+        elements.gpsStatus.classList.add('active');
+        elements.gpsStatus.classList.remove('warning');
+    }
+    else {
+        elements.gpsStatus.classList.remove('warning');
+        if (isAutoPaused) {
+            statusText.textContent = 'GPS 訊號弱 - 等待恢復...';
+        }
+    }
 }
 
 // ==================== Activity Tracking ====================
@@ -333,6 +369,7 @@ function startActivity() {
     lastPosition = null;
     activityPausedTime = 0;
     activityElapsedTime = 0;
+    isAutoPaused = false;
 
     // Clear previous route
     if (routePolyline) {
@@ -378,6 +415,13 @@ function pauseActivity() {
     // Store pause start time
     window.pauseStartTime = pauseTime;
 
+    // Reset lastPosition on pause to prevent distance spikes when resuming elsewhere
+    lastPosition = null;
+
+    if (!isAutoPaused) {
+        isAutoPaused = false; // Reset if manually paused
+    }
+
     console.log('Activity paused');
 }
 
@@ -396,6 +440,8 @@ function resumeActivity() {
 
     // Restart timer
     startTimer();
+
+    isAutoPaused = false; // Reset on resume
 
     console.log('Activity resumed');
 }
@@ -440,6 +486,8 @@ function stopActivity() {
 
     // Reset state
     activityState = 'idle';
+    isAutoPaused = false;
+    lastPosition = null;
 
     console.log('Activity stopped');
 }
@@ -516,26 +564,23 @@ function displayHistory(filter = 'all') {
 
         return `
             <div class="history-item">
-                <div class="history-item-left">
-                    <div class="history-item-icon">${icon}</div>
-                    <div class="history-item-info">
-                        <h3>${typeText}</h3>
-                        <div class="history-item-date">${formatDate(date)}</div>
-                    </div>
+                <div class="history-icon">${icon}</div>
+                <div class="history-info">
+                    <div class="history-type">${typeText}</div>
+                    <div class="history-date">${formatDate(date)}</div>
                 </div>
-                <div class="history-item-stats">
-                    <div>
-                        <div class="history-stat-value">${activity.distance.toFixed(2)} km</div>
-                        <div class="history-stat-label">距離</div>
-                    </div>
-                    <div>
-                        <div class="history-stat-value">${activity.averageSpeed.toFixed(1)} km/h</div>
-                        <div class="history-stat-label">平均速度</div>
-                    </div>
-                    <div>
-                        <div class="history-stat-value">${formatTime(activity.duration)}</div>
-                        <div class="history-stat-label">時間</div>
-                    </div>
+                
+                <div class="history-stat stat-distance">
+                    <div class="history-stat-value">${activity.distance.toFixed(2)} <span class="unit">km</span></div>
+                    <div class="history-stat-label">距離</div>
+                </div>
+                <div class="history-stat stat-speed">
+                    <div class="history-stat-value">${activity.averageSpeed.toFixed(1)} <span class="unit">km/h</span></div>
+                    <div class="history-stat-label">均速</div>
+                </div>
+                <div class="history-stat stat-time">
+                    <div class="history-stat-value">${formatTime(activity.duration)}</div>
+                    <div class="history-stat-label">時間</div>
                 </div>
             </div>
         `;
