@@ -4,6 +4,7 @@
 A web-based running tracker with stunning Liquid Glass UI design
 
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+![UI](https://github.com/inchinet/runrecord/blob/main/runrecord.png)
 
 ## ✨ 功能特色 Features
 
@@ -197,3 +198,4 @@ Created by [inchinet](https://github.com/inchinet)
 ---
 
 **享受您的跑步！ Enjoy your running! 🏃‍♂️💨**
+
