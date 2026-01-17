@@ -22,11 +22,11 @@ let timerInterval = null;
 // Auto-pause state
 let isAutoPaused = false;
 let lastGpsUpdate = 0; // Timestamp of last valid GPS signal
-const ACCURACY_PAUSE_THRESHOLD = 30; // meters (Match recording threshold to avoid zombie state)
-const ACCURACY_RESUME_THRESHOLD = 20; // meters (Require strong signal to resume - hysteresis)
+const ACCURACY_PAUSE_THRESHOLD = 20; // meters (Stricter pause threshold)
+const ACCURACY_RESUME_THRESHOLD = 15; // meters (Very strict resume threshold)
 const GPS_TIMEOUT_MS = 10000; // 10 seconds timeout
-const MAX_SPEED_THRESHOLD = 25; // km/h (Strict filter for spikes: ~2:24/km pace)
-const RECORDING_ACCURACY_THRESHOLD = 30; // meters (Allow points up to pause threshold)
+const MAX_SPEED_THRESHOLD = 20; // km/h (Strict filter for spikes)
+const RECORDING_ACCURACY_THRESHOLD = 20; // meters (Only record high quality points)
 
 // ==================== DOM Elements ====================
 const elements = {
