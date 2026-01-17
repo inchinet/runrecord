@@ -25,8 +25,11 @@ let lastGpsUpdate = 0; // Timestamp of last valid GPS signal
 const ACCURACY_PAUSE_THRESHOLD = 20; // meters (Stricter pause threshold)
 const ACCURACY_RESUME_THRESHOLD = 15; // meters (Very strict resume threshold)
 const GPS_TIMEOUT_MS = 10000; // 10 seconds timeout
-const MAX_SPEED_THRESHOLD = 20; // km/h (Strict filter for spikes)
 const RECORDING_ACCURACY_THRESHOLD = 20; // meters (Only record high quality points)
+
+function getMaxSpeedThreshold() {
+    return activityType === 'running' ? 25 : 12; // 25km/h for running, 12km/h for walking
+}
 
 // ==================== DOM Elements ====================
 const elements = {
@@ -273,8 +276,9 @@ function recordPosition(position) {
 
         if (timeDiff > 0) {
             const speedKmph = (distance / timeDiff) * 3600;
-            if (speedKmph > MAX_SPEED_THRESHOLD) {
-                console.log(`Ignored point: speed ${speedKmph.toFixed(1)}km/h > ${MAX_SPEED_THRESHOLD}km/h (Spike detected)`);
+            const limit = getMaxSpeedThreshold();
+            if (speedKmph > limit) {
+                console.log(`Ignored point: speed ${speedKmph.toFixed(1)}km/h > ${limit}km/h (Spike detected)`);
                 return;
             }
         }
