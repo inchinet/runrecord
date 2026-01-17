@@ -21,8 +21,12 @@ let timerInterval = null;
 
 // Auto-pause state
 let isAutoPaused = false;
-const ACCURACY_PAUSE_THRESHOLD = 100; // meters (less strict for subway/weak signal)
-const ACCURACY_RESUME_THRESHOLD = 30; // meters (strong signal)
+let lastGpsUpdate = 0; // Timestamp of last valid GPS signal
+const ACCURACY_PAUSE_THRESHOLD = 30; // meters (Match recording threshold to avoid zombie state)
+const ACCURACY_RESUME_THRESHOLD = 20; // meters (Require strong signal to resume - hysteresis)
+const GPS_TIMEOUT_MS = 10000; // 10 seconds timeout
+const MAX_SPEED_THRESHOLD = 25; // km/h (Strict filter for spikes: ~2:24/km pace)
+const RECORDING_ACCURACY_THRESHOLD = 30; // meters (Allow points up to pause threshold)
 
 // ==================== DOM Elements ====================
 const elements = {
@@ -145,6 +149,7 @@ function startGPSWatch() {
     watchId = navigator.geolocation.watchPosition(
         (position) => {
             currentPosition = position;
+            lastGpsUpdate = Date.now(); // Update heartbeat
             updateGPSStatus(position.coords.accuracy);
 
             // If activity is running, record the position
@@ -154,16 +159,35 @@ function startGPSWatch() {
         },
         (error) => {
             console.error('GPS watch error:', error);
+
+            // Determine error message
+            let msg = 'GPS 錯誤';
+            switch (error.code) {
+                case 1: msg = 'GPS 權限被拒'; break;
+                case 2: msg = 'GPS 無法取得'; break;
+                case 3: msg = 'GPS 逾時'; break;
+            }
+
             // Auto-pause if we lose GPS signal while running
             if (activityState === 'running') {
-                console.log('GPS signal lost, auto-pausing...');
+                console.log(`GPS signal lost (${msg}), auto-pausing...`);
                 isAutoPaused = true;
                 pauseActivity();
+
+                // Update UI status specifically for auto-pause
+                const statusText = elements.gpsStatus.querySelector('.status-text');
+                statusText.textContent = `${msg} - 已自動暫停`;
+                elements.gpsStatus.classList.remove('active');
+                elements.gpsStatus.classList.add('warning');
+            } else if (isAutoPaused) {
+                // Determine if we should update status when already paused
+                const statusText = elements.gpsStatus.querySelector('.status-text');
+                statusText.textContent = `${msg} - 等待恢復...`;
             }
         },
         {
             enableHighAccuracy: true,
-            timeout: 5000,
+            timeout: 10000, // Increased timeout for initial acquisition if needed, but watchPosition handles updates
             maximumAge: 0
         }
     );
@@ -213,21 +237,29 @@ function updateGPSStatus(accuracy) {
         elements.gpsStatus.classList.remove('warning');
         if (isAutoPaused) {
             statusText.textContent = 'GPS 訊號弱 - 等待恢復...';
+        } else {
+            // If we are here, accuracy is between RESUME(30) and PAUSE(50), or we are running fine.
+            // We can check timeout here as well, but the timer loop usually handles it.
+            statusText.textContent = 'GPS 已啟用';
         }
     }
 }
 
 // ==================== Activity Tracking ====================
 function recordPosition(position) {
+    // 1. Accuracy Filter for RECORDING (stricter than pausing)
+    if (position.coords.accuracy > RECORDING_ACCURACY_THRESHOLD) {
+        console.log(`Ignored point: accuracy ${position.coords.accuracy}m > ${RECORDING_ACCURACY_THRESHOLD}m`);
+        return;
+    }
+
     const coords = {
         lat: position.coords.latitude,
         lng: position.coords.longitude,
         timestamp: position.timestamp
     };
 
-    routeCoordinates.push(coords);
-
-    // Calculate distance if we have a previous position
+    // 2. Spike Filter (Speed Sanity Check)
     if (lastPosition) {
         const distance = calculateDistance(
             lastPosition.coords.latitude,
@@ -236,10 +268,23 @@ function recordPosition(position) {
             position.coords.longitude
         );
 
+        // Time difference in seconds
+        const timeDiff = (position.timestamp - lastPosition.timestamp) / 1000;
+
+        if (timeDiff > 0) {
+            const speedKmph = (distance / timeDiff) * 3600;
+            if (speedKmph > MAX_SPEED_THRESHOLD) {
+                console.log(`Ignored point: speed ${speedKmph.toFixed(1)}km/h > ${MAX_SPEED_THRESHOLD}km/h (Spike detected)`);
+                return;
+            }
+        }
+
+        // If passed checks, add to total distance
         totalDistance += distance;
         updateStats();
     }
 
+    routeCoordinates.push(coords);
     lastPosition = position;
 
     // Auto-center map on current position during active run
@@ -343,9 +388,32 @@ function startTimer() {
         clearInterval(timerInterval);
     }
 
+    // Reset lastGpsUpdate to now to prevent immediate timeout upon start
+    lastGpsUpdate = Date.now();
+
     timerInterval = setInterval(() => {
         updateStats();
+        checkGpsTimeout();
     }, 1000);
+}
+
+function checkGpsTimeout() {
+    if (activityState !== 'running') return;
+
+    const now = Date.now();
+    if (now - lastGpsUpdate > GPS_TIMEOUT_MS) {
+        console.log(`GPS timeout: ${now - lastGpsUpdate}ms > ${GPS_TIMEOUT_MS}ms. Auto-pausing.`);
+
+        isAutoPaused = true;
+        pauseActivity();
+
+        // Update UI status
+        const statusText = elements.gpsStatus.querySelector('.status-text');
+        statusText.textContent = 'GPS 訊號中斷 (逾時) - 已自動暫停';
+        elements.gpsStatus.classList.remove('active');
+        elements.gpsStatus.classList.add('error'); // Use 'error' style or 'warning'
+        elements.gpsStatus.classList.add('warning');
+    }
 }
 
 function stopTimer() {

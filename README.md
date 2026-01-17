@@ -4,7 +4,6 @@
 A web-based running tracker with stunning Liquid Glass UI design
 
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
-![UI](https://github.com/inchinet/runrecord/blob/main/runrecord.png)
 
 ## ✨ 功能特色 Features
 
@@ -123,7 +122,9 @@ runrecord/
 - 高精度模式 High accuracy mode (`enableHighAccuracy`)
 - 即時位置更新 Real-time position updates
 - 訊號強度視覺化指示器 Visual signal strength indicator
-- 自動防抖與訊號遺失處理 Auto-pause when signal is broken (e.g., subway) and auto-resume when signal returns
+- **智慧自動暫停 Smart Auto-Pause**: 當 GPS 精度誤差超過 30m 或訊號遺失(如進入地鐵/隧道)時自動暫停，防止「殭屍跑步」狀態 / Auto-pauses when accuracy > 30m or signal is lost (e.g., subway/tunnel) to prevent "zombie" states
+- **遲滯自動恢復 Hysteresis Auto-Resume**: 需訊號精度恢復至優於 20m 才自動繼續，確保軌跡準確 / Requires signal accuracy < 20m to resume, ensuring clean tracks
+- **防飄移濾波 Anti-Drift Filter**: 濾除異常速度尖峰 (>25km/h) 造成的軌跡亂跳 / Filters out speed spikes (>25km/h) to prevent GPS drift (e.g., jumping across rivers)
 - 自動地圖居中 Automatic map centering during activity
 
 ### 資料儲存 Data Storage
@@ -198,4 +199,3 @@ Created by [inchinet](https://github.com/inchinet)
 ---
 
 **享受您的跑步！ Enjoy your running! 🏃‍♂️💨**
-
