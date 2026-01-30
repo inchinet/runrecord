@@ -22,9 +22,9 @@ let timerInterval = null;
 // Auto-pause state
 let isAutoPaused = false;
 let lastGpsUpdate = 0; // Timestamp of last valid GPS signal
-const ACCURACY_PAUSE_THRESHOLD = 20; // meters (Stricter pause threshold)
-const ACCURACY_RESUME_THRESHOLD = 15; // meters (Very strict resume threshold)
-const GPS_TIMEOUT_MS = 10000; // 10 seconds timeout
+const ACCURACY_PAUSE_THRESHOLD = 25; // meters (Less sensitive pause threshold)
+const ACCURACY_RESUME_THRESHOLD = 20; // meters (Matching resume threshold)
+const GPS_TIMEOUT_MS = 5000; // 5 seconds timeout
 const RECORDING_ACCURACY_THRESHOLD = 20; // meters (Only record high quality points)
 
 function getMaxSpeedThreshold() {
