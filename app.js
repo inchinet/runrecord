@@ -28,7 +28,7 @@ const GPS_TIMEOUT_MS = 5000; // 5 seconds timeout
 const RECORDING_ACCURACY_THRESHOLD = 20; // meters (Only record high quality points)
 
 function getMaxSpeedThreshold() {
-    return activityType === 'running' ? 25 : 12; // 25km/h for running, 12km/h for walking
+    return activityType === 'running' ? 20 : 10; // 20km/h for running, 10km/h for walking
 }
 
 // ==================== DOM Elements ====================
