@@ -462,7 +462,7 @@ function saveActivity() {
         duration: activityElapsedTime,
         distance: totalDistance,
         averageSpeed: activityElapsedTime > 0 ? (totalDistance / activityElapsedTime) * 3600 : 0,
-        route: routeCoordinates
+        route: routeSegments
     };
 
     // Get existing activities
