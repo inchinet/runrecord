@@ -209,3 +209,6 @@ Created by [inchinet](https://github.com/inchinet)
 
 **享受您的跑步！ Enjoy your running! 🏃‍♂️💨**
 "# runrecord" 
+
+Android version: (https://github.com/inchinet/runrecord-app)
+
